@@ -1,12 +1,15 @@
 package com.abreu.tests.service;
 
 import com.abreu.tests.model.Product;
+import com.abreu.tests.model.dto.ProductDTO;
 import com.abreu.tests.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -33,7 +36,11 @@ public class ProductServiceTest {
     private ProductService productService;
 
     static Product product;
+    static ProductDTO productDTO;
     static Optional<Product> optionalProduct;
+
+    @Captor
+    private ArgumentCaptor<Product> productArgumentCaptor;
 
     @BeforeEach
     void setUp() {
@@ -99,11 +106,51 @@ public class ProductServiceTest {
 
             verify(productRepository, times(1)).findAll();
         }
+    }
 
+    @Nested
+    class Create {
+
+        @Test
+        @DisplayName("Should return success when email not exists")
+        void shouldReturnSuccessWhenEmailNotExists() {
+
+            when(productRepository.save(productArgumentCaptor.capture())).thenReturn(product);
+
+            var response = productService.save(productDTO);
+
+            assertNotNull(response);
+            assertEquals(Product.class, response.getClass());
+            assertEquals(ID, response.getId());
+            assertEquals(NAME, response.getName());
+            assertEquals(DESCRIPTION, response.getDescription());
+            assertEquals(EMAIL, response.getEmail());
+
+            Product productCaptured = productArgumentCaptor.getValue();
+
+            assertNotNull(productCaptured);
+            assertEquals(Product.class, productCaptured.getClass());
+            assertEquals(ID, productCaptured.getId());
+            assertEquals(NAME, productCaptured.getName());
+            assertEquals(DESCRIPTION, productCaptured.getDescription());
+            assertEquals(EMAIL, productCaptured.getEmail());
+        }
+
+        @Test
+        @DisplayName("Should throw a RuntimeException when email exists")
+        void shouldThrowARuntimeExceptionWhenEmailExists() {
+            when(productRepository.findByEmail(EMAIL)).thenReturn(optionalProduct);
+            optionalProduct.get().setId(2L);
+
+            var exception = assertThrows(RuntimeException.class, () -> productService.save(productDTO));
+
+            assertEquals("Email already exists!", exception.getMessage());
+        }
     }
 
     private void startProduct() {
         product = new Product(ID, NAME, DESCRIPTION, EMAIL);
+        productDTO = new ProductDTO(ID, NAME, DESCRIPTION, EMAIL);
         optionalProduct = Optional.of(product);
     }
 }
