@@ -188,6 +188,37 @@ public class ProductServiceTest {
 
             assertEquals(PRODUCT_NOT_FOUND, exception.getMessage());
         }
+    }
+
+    @Nested
+    class Delete {
+
+        @Test
+        @DisplayName("Should return success when ID exists")
+        void shouldReturnSuccessWhenIDExists() {
+
+            when(productRepository.existsById(ID)).thenReturn(true);
+            doNothing().when(productRepository).deleteById(ID);
+
+            productService.delete(ID);
+
+            verify(productRepository, times(1)).existsById(ID);
+            verify(productRepository, times(1)).deleteById(ID);
+        }
+
+        @Test
+        @DisplayName("Should throw RuntimeException when ID not exists")
+        void shouldThrowRuntimeExceptionWhenIDNotExists() {
+
+            when(productRepository.existsById(ID)).thenReturn(false);
+
+            var exception = assertThrows(RuntimeException.class, () -> productService.delete(ID));
+
+            assertEquals(PRODUCT_NOT_FOUND ,exception.getMessage());
+
+            verify(productRepository, times(1)).existsById(ID);
+            verify(productRepository, times(0)).deleteById(ID);
+        }
 
     }
 
