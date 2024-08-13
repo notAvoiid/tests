@@ -33,6 +33,12 @@ public class ProductService {
         return productRepository.save(new Product(data));
     }
 
+    @Transactional
+    public Product update(Long id, ProductDTO data) {
+        var product = findById(id);
+        return productRepository.save(new Product(data));
+    }
+
     private void findByEmail(ProductDTO data) {
         var product = productRepository.findByEmail(data.email());
         if (product.isPresent() && !product.get().getId().equals(data.id())) throw new RuntimeException("Email already exists!");
