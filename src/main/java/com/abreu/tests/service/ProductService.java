@@ -5,6 +5,8 @@ import com.abreu.tests.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class ProductService {
 
@@ -17,5 +19,10 @@ public class ProductService {
     @Transactional(readOnly = true)
     public Product findById(Long id) {
         return productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found!"));
+    }
+
+    @Transactional(readOnly = true)
+    public List<Product> findAll() {
+        return productRepository.findAll();
     }
 }
