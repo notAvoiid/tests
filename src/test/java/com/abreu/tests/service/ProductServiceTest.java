@@ -28,6 +28,7 @@ public class ProductServiceTest {
     public static final String NAME = "name";
     public static final long ID = 1L;
     public static final int INDEX = 0;
+    public static final String PRODUCT_NOT_FOUND = "Product not found!";
 
     @Mock
     private ProductRepository productRepository;
@@ -79,7 +80,7 @@ public class ProductServiceTest {
 
             var exception = assertThrows(RuntimeException.class, () -> productService.findById(ID));
 
-            assertEquals("Product not found!", exception.getMessage());
+            assertEquals(PRODUCT_NOT_FOUND, exception.getMessage());
         }
     }
 
@@ -146,6 +147,48 @@ public class ProductServiceTest {
 
             assertEquals("Email already exists!", exception.getMessage());
         }
+    }
+
+    @Nested
+    class Update {
+
+        @Test
+        @DisplayName("Should return success when product exists")
+        void shouldReturnSuccessWhenProductExists() {
+
+            when(productRepository.findById(ID)).thenReturn(optionalProduct);
+            when(productRepository.save(productArgumentCaptor.capture())).thenReturn(product);
+
+            var response = productService.update(ID, productDTO);
+
+            assertNotNull(response);
+            assertEquals(Product.class, response.getClass());
+            assertEquals(ID, response.getId());
+            assertEquals(NAME, response.getName());
+            assertEquals(DESCRIPTION, response.getDescription());
+            assertEquals(EMAIL, response.getEmail());
+
+            Product productCaptured = productArgumentCaptor.getValue();
+
+            assertNotNull(productCaptured);
+            assertEquals(Product.class, productCaptured.getClass());
+            assertEquals(ID, productCaptured.getId());
+            assertEquals(NAME, productCaptured.getName());
+            assertEquals(DESCRIPTION, productCaptured.getDescription());
+            assertEquals(EMAIL, productCaptured.getEmail());
+        }
+
+        @Test
+        @DisplayName("Should throw RuntimeException when ID not exists")
+        void shouldThrowRuntimeExceptionWhenIDNotExists() {
+
+            when(productRepository.findById(ID)).thenReturn(Optional.empty());
+
+            var exception = assertThrows(RuntimeException.class, () -> productService.update(ID, productDTO));
+
+            assertEquals(PRODUCT_NOT_FOUND, exception.getMessage());
+        }
+
     }
 
     private void startProduct() {
