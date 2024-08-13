@@ -39,6 +39,12 @@ public class ProductService {
         return productRepository.save(new Product(data));
     }
 
+    @Transactional
+    public void delete(Long id) {
+        if (!productRepository.existsById(id)) throw new  RuntimeException("Product not found!");
+        productRepository.deleteById(id);
+    }
+
     private void findByEmail(ProductDTO data) {
         var product = productRepository.findByEmail(data.email());
         if (product.isPresent() && !product.get().getId().equals(data.id())) throw new RuntimeException("Email already exists!");
