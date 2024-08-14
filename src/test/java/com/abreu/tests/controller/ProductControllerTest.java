@@ -71,6 +71,33 @@ public class ProductControllerTest {
         }
     }
 
+    @Nested
+    class Create {
+        @Test
+        @DisplayName("Should return success when email does not exist")
+        void shouldReturnSuccessWhenEmailDoesNotExist(){
+            when(productService.save(any())).thenReturn(product);
+
+            ResponseEntity<Product> response = productController.save(productDTO);
+
+            assertNotNull(response);
+            assertNotNull(response.getBody());
+
+            assertEquals(HttpStatus.CREATED, response.getStatusCode());
+
+            assertEquals(ResponseEntity.class, response.getClass());
+            assertInstanceOf(Product.class, response.getBody());
+            assertEquals(Product.class, response.getBody().getClass());
+            assertEquals(ID, response.getBody().getId());
+            assertEquals(NAME, response.getBody().getName());
+            assertEquals(DESCRIPTION, response.getBody().getDescription());
+            assertEquals(EMAIL, response.getBody().getEmail());
+
+            verify(productService, times(1)).save(productDTO);
+        }
+    }
+
+
     private void startProduct() {
         product = new Product(ID, NAME, DESCRIPTION, EMAIL);
         productDTO = new ProductDTO(ID, NAME, DESCRIPTION, EMAIL);
