@@ -1,9 +1,12 @@
 package com.abreu.tests.controller;
 
 import com.abreu.tests.model.Product;
+import com.abreu.tests.model.dto.ProductDTO;
 import com.abreu.tests.service.ProductService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,5 +25,10 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<List<Product>> findAll() {
         return ResponseEntity.ok(productService.findAll());
+    }
+
+    @PostMapping
+    public ResponseEntity<Product> save(ProductDTO data) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(productService.save(data));
     }
 }
