@@ -36,9 +36,10 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<Product> save(ProductDTO data) {
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(productService.save(data).getId()).toUri();
-        return ResponseEntity.created(uri).body(productService.save(data));
+    public ResponseEntity<Product> save(@RequestBody ProductDTO data) {
+        Product savedProduct = productService.save(data);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedProduct.getId()).toUri();
+        return ResponseEntity.created(uri).body(savedProduct);
     }
 
     @DeleteMapping("/{id}")

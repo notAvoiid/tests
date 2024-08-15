@@ -30,7 +30,8 @@ public class ProductService {
     @Transactional
     public Product save(ProductDTO data) {
         findByEmail(data);
-        return productRepository.save(new Product(data));
+        Product product = new Product(data);
+        return productRepository.save(product);
     }
 
     @Transactional

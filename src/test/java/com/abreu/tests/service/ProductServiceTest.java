@@ -77,6 +77,8 @@ public class ProductServiceTest {
             assertEquals(PRODUCT.getName(), response.getName());
             assertEquals(PRODUCT.getDescription(), response.getDescription());
             assertEquals(PRODUCT.getEmail(), response.getEmail());
+
+            verify(productRepository, times(1)).findById(PRODUCT.getId());
         }
 
         @Test
@@ -117,6 +119,8 @@ public class ProductServiceTest {
             assertEquals(PRODUCT.getName(), productCaptured.getName());
             assertEquals(PRODUCT.getDescription(), productCaptured.getDescription());
             assertEquals(PRODUCT.getEmail(), productCaptured.getEmail());
+
+            verify(productRepository, times(1)).save(any());
         }
 
         @Test
@@ -159,6 +163,9 @@ public class ProductServiceTest {
             assertEquals(PRODUCT.getName(), productCaptured.getName());
             assertEquals(PRODUCT.getDescription(), productCaptured.getDescription());
             assertEquals(PRODUCT.getEmail(), productCaptured.getEmail());
+
+            verify(productRepository, times(1)).findById(anyLong());
+            verify(productRepository, times(1)).save(any());
         }
 
         @Test
