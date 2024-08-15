@@ -139,4 +139,19 @@ public class ProductControllerTest {
                 .andExpect(jsonPath(EMAIL).value(PRODUCT.getEmail()));
         }
     }
+
+    @Nested
+    class Delete {
+
+        @Test
+        @DisplayName("Should Delete Product Successfully")
+        void shouldDeleteProductSuccessfully() throws Exception {
+
+            when(productService.findById(PRODUCT.getId())).thenReturn(PRODUCT);
+
+            mockMvc.perform(delete(URL + "/{id}", PRODUCT.getId())
+                .accept(APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+        }
+    }
 }
