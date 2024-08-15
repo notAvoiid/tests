@@ -1,5 +1,7 @@
 package com.abreu.tests.service;
 
+import com.abreu.tests.exceptions.EmailAlreadyExistsException;
+import com.abreu.tests.exceptions.ProductNotFoundException;
 import com.abreu.tests.model.Product;
 import com.abreu.tests.repository.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -87,7 +89,7 @@ public class ProductServiceTest {
 
             when(productRepository.findById(PRODUCT.getId())).thenReturn(Optional.empty());
 
-            var exception = assertThrows(RuntimeException.class, () -> productService.findById(PRODUCT.getId()));
+            var exception = assertThrows(ProductNotFoundException.class, () -> productService.findById(PRODUCT.getId()));
 
             assertEquals(PRODUCT_NOT_FOUND, exception.getMessage());
         }
@@ -129,7 +131,7 @@ public class ProductServiceTest {
             when(productRepository.findByEmail(PRODUCT.getEmail())).thenReturn(OPTIONAL_PRODUCT);
             OPTIONAL_PRODUCT.get().setId(2L);
 
-            var exception = assertThrows(RuntimeException.class, () -> productService.save(PRODUCT_DTO));
+            var exception = assertThrows(EmailAlreadyExistsException.class, () -> productService.save(PRODUCT_DTO));
 
             assertEquals("Email already exists!", exception.getMessage());
             OPTIONAL_PRODUCT.get().setId(1L);
@@ -174,7 +176,7 @@ public class ProductServiceTest {
 
             when(productRepository.findById(PRODUCT.getId())).thenReturn(Optional.empty());
 
-            var exception = assertThrows(RuntimeException.class, () -> productService.update(PRODUCT_DTO));
+            var exception = assertThrows(ProductNotFoundException.class, () -> productService.update(PRODUCT_DTO));
 
             assertEquals(PRODUCT_NOT_FOUND, exception.getMessage());
         }
@@ -202,7 +204,7 @@ public class ProductServiceTest {
 
             when(productRepository.existsById(PRODUCT.getId())).thenReturn(false);
 
-            var exception = assertThrows(RuntimeException.class, () -> productService.delete(PRODUCT.getId()));
+            var exception = assertThrows(ProductNotFoundException.class, () -> productService.delete(PRODUCT.getId()));
 
             assertEquals(PRODUCT_NOT_FOUND ,exception.getMessage());
 
