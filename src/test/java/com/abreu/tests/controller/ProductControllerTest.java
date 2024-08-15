@@ -1,107 +1,79 @@
 package com.abreu.tests.controller;
 
-import com.abreu.tests.model.Product;
+
 import com.abreu.tests.model.dto.ProductDTO;
 import com.abreu.tests.service.ProductService;
-import org.junit.jupiter.api.BeforeEach;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
-import java.util.Optional;
+import static com.abreu.tests.utils.ProductConstants.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest
 public class ProductControllerTest {
+    
+    @Autowired
+    MockMvc mockMvc;
 
-    private static final long ID = 1L;
-    private static final String NAME = "name";
-    private static final String DESCRIPTION = "description";
-    private static final String EMAIL = "fulanodetal@gmail.com";
-    public static final int INDEX = 0;
+    @Autowired
+    ObjectMapper objectMapper;
 
-    @InjectMocks
-    private ProductController productController;
-
-    @Mock
+    @MockBean
     private ProductService productService;
-
-    static Product product;
-    static ProductDTO productDTO;
-    static Optional<Product> optionalProduct;
-
-    @BeforeEach
-    void setUp() {
-        startProduct();
-    }
 
     @Nested
     class FindAll {
 
         @Test
-        @DisplayName("Should return all products when success")
-        void shouldReturnAllProductsWhenSuccess(){
-            when(productService.findAll()).thenReturn(List.of(product));
+        @DisplayName("Should return all products successfully")
+        void shouldReturnAllProductsSuccessfully() throws Exception {
 
-            var response = productController.findAll();
+            when(productService.findAll()).thenReturn(PRODUCTS);
 
-            assertNotNull(response);
-            assertNotNull(response.getBody());
+            String productJson = objectMapper.writeValueAsString(PRODUCTS);
 
-            assertEquals(HttpStatus.OK, response.getStatusCode());
-
-            assertEquals(ResponseEntity.class, response.getClass());
-            assertInstanceOf(List.class, response.getBody());
-            assertEquals(Product.class, response.getBody().get(INDEX).getClass());
-            assertEquals(ID, response.getBody().get(INDEX).getId());
-            assertEquals(NAME, response.getBody().get(INDEX).getName());
-            assertEquals(DESCRIPTION, response.getBody().get(INDEX).getDescription());
-            assertEquals(EMAIL, response.getBody().get(INDEX).getEmail());
-
-            verify(productService, times(1)).findAll();
+            mockMvc.perform(get(URL)
+                            .contentType(APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(content().json(productJson))
+                    .andExpect(jsonPath("$.size()").value(PRODUCTS.size()))
+                    .andExpect(jsonPath(ID_0).value(PRODUCTS.get(INDEX).getId()))
+                    .andExpect(jsonPath(NAME_0).value(PRODUCTS.get(INDEX).getName()))
+                    .andExpect(jsonPath(DESCRIPTION_0).value(PRODUCTS.get(INDEX).getDescription()))
+                    .andExpect(jsonPath(EMAIL_0).value(PRODUCTS.get(INDEX).getEmail()));
         }
     }
 
     @Nested
     class Create {
         @Test
-        @DisplayName("Should return success when email does not exist")
-        void shouldReturnSuccessWhenEmailDoesNotExist(){
-            when(productService.save(any())).thenReturn(product);
+        @DisplayName("Should Create Product Successfully")
+        void shouldCreateProductSuccessfully() throws Exception {
+            when(productService.save(any(ProductDTO.class))).thenReturn(PRODUCT);
 
-            ResponseEntity<Product> response = productController.save(productDTO);
+            String productJson = objectMapper.writeValueAsString(PRODUCT);
 
-            assertNotNull(response);
-            assertNotNull(response.getBody());
-
-            assertEquals(HttpStatus.CREATED, response.getStatusCode());
-
-            assertEquals(ResponseEntity.class, response.getClass());
-            assertInstanceOf(Product.class, response.getBody());
-            assertEquals(Product.class, response.getBody().getClass());
-            assertEquals(ID, response.getBody().getId());
-            assertEquals(NAME, response.getBody().getName());
-            assertEquals(DESCRIPTION, response.getBody().getDescription());
-            assertEquals(EMAIL, response.getBody().getEmail());
-
-            verify(productService, times(1)).save(productDTO);
+            mockMvc.perform(post(URL)
+                    .contentType(APPLICATION_JSON)
+                    .content(productJson))
+                    .andExpect(status().isCreated())
+                    .andExpect(header().exists("Location"))
+                    .andExpect(jsonPath(ID).value(PRODUCT.getId()))
+                    .andExpect(jsonPath(NAME).value(PRODUCT.getName()))
+                    .andExpect(jsonPath(DESCRIPTION).value(PRODUCT.getDescription()))
+                    .andExpect(jsonPath(EMAIL).value(PRODUCT.getEmail()));
         }
-    }
-
-
-    private void startProduct() {
-        product = new Product(ID, NAME, DESCRIPTION, EMAIL);
-        productDTO = new ProductDTO(ID, NAME, DESCRIPTION, EMAIL);
-        optionalProduct = Optional.of(product);
     }
 
 }
