@@ -26,4 +26,5 @@ public class ProductConstants {
     public static final String APPLICATION_JSON_VALUE = "application/json";
     public static final String CONTENT_TYPE = "Content-Type";
     public static final String PRODUCT_NOT_FOUND = "Product not found!";
+    public static final String EMAIL_ALREADY_EXISTS = "Email already exists!";
 }

@@ -69,4 +69,44 @@ public class ApiExceptionHandlerTests {
         }
 
     }
+
+    @Nested
+    class ConflictException {
+
+        @Test
+        @DisplayName("Handle Conflict Exception")
+        void handleConflictException() {
+            var response = exceptionHandler.handleConflict(
+                    new EmailAlreadyExistsException(EMAIL_ALREADY_EXISTS),
+                    request
+            );
+
+            assertNotNull(response);
+            assertNotNull(response.getBody());
+            assertNotNull(response.getBody().getTimestamp());
+            assertNotNull(response.getBody().getMethod());
+            assertNotNull(response.getBody().getPath());
+
+            assertEquals(CONFLICT, response.getStatusCode());
+            assertEquals(request.getMethod(), response.getBody().getMethod());
+            assertEquals(request.getRequestURI(), response.getBody().getPath());
+
+            assertEquals(ResponseEntity.class, response.getClass());
+            assertEquals(ErrorMessage.class, response.getBody().getClass());
+            assertEquals(EMAIL_ALREADY_EXISTS, response.getBody().getMessage());
+            assertEquals(409, response.getBody().getStatus());
+        }
+
+        @Test
+        @DisplayName("Handle Null Request When Conflict")
+        void handleNullRequest() {
+            var response = exceptionHandler.handleConflict(
+                    new EmailAlreadyExistsException(EMAIL_ALREADY_EXISTS),
+                    null
+            );
+
+            assertNotNull(response);
+            assertEquals(CONFLICT, response.getStatusCode());
+        }
+    }
 }
