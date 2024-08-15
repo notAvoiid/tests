@@ -21,4 +21,6 @@ public class ProductConstants {
     public static final String NAME = "$.name";
     public static final String DESCRIPTION = "$.description";
     public static final String EMAIL = "$.email";
+    public static final String TYPE = "application/json";
+    public static final String CONTENT_TYPE = "Content-Type";
 }

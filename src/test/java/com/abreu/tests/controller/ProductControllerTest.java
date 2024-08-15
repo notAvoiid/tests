@@ -3,6 +3,7 @@ package com.abreu.tests.controller;
 
 import com.abreu.tests.model.dto.ProductDTO;
 import com.abreu.tests.service.ProductService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -22,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest
 public class ProductControllerTest {
-    
+
     @Autowired
     MockMvc mockMvc;
 
@@ -44,16 +45,51 @@ public class ProductControllerTest {
             String productJson = objectMapper.writeValueAsString(PRODUCTS);
 
             mockMvc.perform(get(URL)
-                            .contentType(APPLICATION_JSON))
-                    .andExpect(status().isOk())
-                    .andExpect(content().json(productJson))
-                    .andExpect(jsonPath("$.size()").value(PRODUCTS.size()))
-                    .andExpect(jsonPath(ID_0).value(PRODUCTS.get(INDEX).getId()))
-                    .andExpect(jsonPath(NAME_0).value(PRODUCTS.get(INDEX).getName()))
-                    .andExpect(jsonPath(DESCRIPTION_0).value(PRODUCTS.get(INDEX).getDescription()))
-                    .andExpect(jsonPath(EMAIL_0).value(PRODUCTS.get(INDEX).getEmail()));
+                .accept(APPLICATION_JSON)
+                .contentType(APPLICATION_JSON))
+
+                .andExpect(status().isOk())
+                .andExpect(content().json(productJson))
+                .andExpect(content().contentType(APPLICATION_JSON))
+
+                .andExpect(header().string(CONTENT_TYPE, TYPE))
+
+                .andExpect(jsonPath("$.size()").value(PRODUCTS.size()))
+                .andExpect(jsonPath(ID_0).value(PRODUCTS.get(INDEX).getId()))
+                .andExpect(jsonPath(NAME_0).value(PRODUCTS.get(INDEX).getName()))
+                .andExpect(jsonPath(DESCRIPTION_0).value(PRODUCTS.get(INDEX).getDescription()))
+                .andExpect(jsonPath(EMAIL_0).value(PRODUCTS.get(INDEX).getEmail()));
         }
     }
+
+    @Nested
+    class FindById {
+
+        @Test
+        @DisplayName("Should Return Product By Id Successfully")
+        void shouldReturnProductByIdSuccessfully() throws Exception {
+
+            when(productService.findById(PRODUCT.getId())).thenReturn(PRODUCT);
+
+            String productJson = objectMapper.writeValueAsString(PRODUCT);
+
+            mockMvc.perform(get(URL + "/{id}", PRODUCT.getId())
+                .accept(APPLICATION_JSON)
+                .contentType(APPLICATION_JSON))
+
+                .andExpect(status().isOk())
+                .andExpect(content().json(productJson))
+                .andExpect(content().contentType(APPLICATION_JSON))
+
+                .andExpect(header().string(CONTENT_TYPE, TYPE))
+
+                .andExpect(jsonPath(ID).value(PRODUCT.getId()))
+                .andExpect(jsonPath(NAME).value(PRODUCT.getName()))
+                .andExpect(jsonPath(DESCRIPTION).value(PRODUCT.getDescription()))
+                .andExpect(jsonPath(EMAIL).value(PRODUCT.getEmail()));
+        }
+    }
+
 
     @Nested
     class Create {
@@ -65,15 +101,17 @@ public class ProductControllerTest {
             String productJson = objectMapper.writeValueAsString(PRODUCT);
 
             mockMvc.perform(post(URL)
-                    .contentType(APPLICATION_JSON)
-                    .content(productJson))
-                    .andExpect(status().isCreated())
-                    .andExpect(header().exists("Location"))
-                    .andExpect(jsonPath(ID).value(PRODUCT.getId()))
-                    .andExpect(jsonPath(NAME).value(PRODUCT.getName()))
-                    .andExpect(jsonPath(DESCRIPTION).value(PRODUCT.getDescription()))
-                    .andExpect(jsonPath(EMAIL).value(PRODUCT.getEmail()));
+                .contentType(APPLICATION_JSON)
+                .content(productJson))
+                .andExpect(status().isCreated())
+
+                .andExpect(header().exists("Location"))
+                .andExpect(header().string(CONTENT_TYPE, TYPE))
+
+                .andExpect(jsonPath(ID).value(PRODUCT.getId()))
+                .andExpect(jsonPath(NAME).value(PRODUCT.getName()))
+                .andExpect(jsonPath(DESCRIPTION).value(PRODUCT.getDescription()))
+                .andExpect(jsonPath(EMAIL).value(PRODUCT.getEmail()));
         }
     }
-
 }
