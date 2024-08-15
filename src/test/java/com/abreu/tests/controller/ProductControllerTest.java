@@ -37,7 +37,6 @@ public class ProductControllerTest {
         @Test
         @DisplayName("Should return all products successfully")
         void shouldReturnAllProductsSuccessfully() throws Exception {
-
             when(productService.findAll()).thenReturn(PRODUCTS);
 
             String productJson = objectMapper.writeValueAsString(PRODUCTS);
@@ -50,7 +49,7 @@ public class ProductControllerTest {
                 .andExpect(content().json(productJson))
                 .andExpect(content().contentType(APPLICATION_JSON))
 
-                .andExpect(header().string(CONTENT_TYPE, TYPE))
+                .andExpect(header().string(CONTENT_TYPE, APPLICATION_JSON_VALUE))
 
                 .andExpect(jsonPath("$.size()").value(PRODUCTS.size()))
                 .andExpect(jsonPath(ID_0).value(PRODUCTS.get(INDEX).getId()))
@@ -66,7 +65,6 @@ public class ProductControllerTest {
         @Test
         @DisplayName("Should Return Product By Id Successfully")
         void shouldReturnProductByIdSuccessfully() throws Exception {
-
             when(productService.findById(PRODUCT.getId())).thenReturn(PRODUCT);
 
             String productJson = objectMapper.writeValueAsString(PRODUCT);
@@ -79,12 +77,36 @@ public class ProductControllerTest {
                 .andExpect(content().json(productJson))
                 .andExpect(content().contentType(APPLICATION_JSON))
 
-                .andExpect(header().string(CONTENT_TYPE, TYPE))
+                .andExpect(header().string(CONTENT_TYPE, APPLICATION_JSON_VALUE))
 
                 .andExpect(jsonPath(ID).value(PRODUCT.getId()))
                 .andExpect(jsonPath(NAME).value(PRODUCT.getName()))
                 .andExpect(jsonPath(DESCRIPTION).value(PRODUCT.getDescription()))
                 .andExpect(jsonPath(EMAIL).value(PRODUCT.getEmail()));
+        }
+    }
+
+    @Nested
+    class Create {
+        @Test
+        @DisplayName("Should Create Product Successfully")
+        void shouldCreateProductSuccessfully() throws Exception {
+            when(productService.save(any(ProductDTO.class))).thenReturn(PRODUCT);
+
+            String productJson = objectMapper.writeValueAsString(PRODUCT);
+
+            mockMvc.perform(post(URL)
+                            .contentType(APPLICATION_JSON)
+                            .content(productJson))
+                    .andExpect(status().isCreated())
+
+                    .andExpect(header().exists("Location"))
+                    .andExpect(header().string(CONTENT_TYPE, APPLICATION_JSON_VALUE))
+
+                    .andExpect(jsonPath(ID).value(PRODUCT.getId()))
+                    .andExpect(jsonPath(NAME).value(PRODUCT.getName()))
+                    .andExpect(jsonPath(DESCRIPTION).value(PRODUCT.getDescription()))
+                    .andExpect(jsonPath(EMAIL).value(PRODUCT.getEmail()));
         }
     }
 
@@ -105,7 +127,7 @@ public class ProductControllerTest {
                 .accept(APPLICATION_JSON))
 
                 .andExpect(status().isOk())
-                .andExpect(header().string(CONTENT_TYPE, TYPE))
+                .andExpect(header().string(CONTENT_TYPE, APPLICATION_JSON_VALUE))
 
                 .andExpect(content().json(productJson))
                 .andExpect(jsonPath(ID).value(PRODUCT.getId()))
@@ -114,30 +136,6 @@ public class ProductControllerTest {
                 .andExpect(jsonPath(EMAIL).value(PRODUCT.getEmail()));
         }
 
-    }
-
-    @Nested
-    class Create {
-        @Test
-        @DisplayName("Should Create Product Successfully")
-        void shouldCreateProductSuccessfully() throws Exception {
-            when(productService.save(any(ProductDTO.class))).thenReturn(PRODUCT);
-
-            String productJson = objectMapper.writeValueAsString(PRODUCT);
-
-            mockMvc.perform(post(URL)
-                .contentType(APPLICATION_JSON)
-                .content(productJson))
-                .andExpect(status().isCreated())
-
-                .andExpect(header().exists("Location"))
-                .andExpect(header().string(CONTENT_TYPE, TYPE))
-
-                .andExpect(jsonPath(ID).value(PRODUCT.getId()))
-                .andExpect(jsonPath(NAME).value(PRODUCT.getName()))
-                .andExpect(jsonPath(DESCRIPTION).value(PRODUCT.getDescription()))
-                .andExpect(jsonPath(EMAIL).value(PRODUCT.getEmail()));
-        }
     }
 
     @Nested
