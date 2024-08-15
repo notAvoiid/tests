@@ -4,10 +4,7 @@ import com.abreu.tests.model.Product;
 import com.abreu.tests.model.dto.ProductDTO;
 import com.abreu.tests.service.ProductService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -26,6 +23,11 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<List<Product>> findAll() {
         return ResponseEntity.ok(productService.findAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Product> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.findById(id));
     }
 
     @PostMapping
