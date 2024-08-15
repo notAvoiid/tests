@@ -1,5 +1,7 @@
 package com.abreu.tests.service;
 
+import com.abreu.tests.exceptions.EmailAlreadyExistsException;
+import com.abreu.tests.exceptions.ProductNotFoundException;
 import com.abreu.tests.model.Product;
 import com.abreu.tests.model.dto.ProductDTO;
 import com.abreu.tests.repository.ProductRepository;
@@ -19,7 +21,7 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public Product findById(Long id) {
-        return productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found!"));
+        return productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product not found!"));
     }
 
     @Transactional(readOnly = true)
@@ -42,12 +44,12 @@ public class ProductService {
 
     @Transactional
     public void delete(Long id) {
-        if (!productRepository.existsById(id)) throw new  RuntimeException("Product not found!");
+        if (!productRepository.existsById(id)) throw new ProductNotFoundException("Product not found!");
         productRepository.deleteById(id);
     }
 
     private void findByEmail(ProductDTO data) {
         var product = productRepository.findByEmail(data.email());
-        if (product.isPresent() && !product.get().getId().equals(data.id())) throw new RuntimeException("Email already exists!");
+        if (product.isPresent() && !product.get().getId().equals(data.id())) throw new EmailAlreadyExistsException("Email already exists!");
     }
 }
