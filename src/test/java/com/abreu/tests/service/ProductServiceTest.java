@@ -1,9 +1,7 @@
 package com.abreu.tests.service;
 
 import com.abreu.tests.model.Product;
-import com.abreu.tests.model.dto.ProductDTO;
 import com.abreu.tests.repository.ProductRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -17,18 +15,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
+import static com.abreu.tests.utils.ProductConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ProductServiceTest {
-
-    public static final String EMAIL = "fulanodetal@gmail.com";
-    public static final String DESCRIPTION = "description";
-    public static final String NAME = "name";
-    public static final long ID = 1L;
-    public static final int INDEX = 0;
-    public static final String PRODUCT_NOT_FOUND = "Product not found!";
 
     @Mock
     private ProductRepository productRepository;
@@ -36,16 +28,31 @@ public class ProductServiceTest {
     @InjectMocks
     private ProductService productService;
 
-    static Product product;
-    static ProductDTO productDTO;
-    static Optional<Product> optionalProduct;
-
     @Captor
     private ArgumentCaptor<Product> productArgumentCaptor;
 
-    @BeforeEach
-    void setUp() {
-        startProduct();
+    @Nested
+    class FindAll {
+
+        @Test
+        @DisplayName("Should return with success all products")
+        void shouldReturnWithSuccessAllProducts() {
+
+            when(productRepository.findAll()).thenReturn(List.of(PRODUCT));
+
+            var response = productService.findAll();
+
+            assertNotNull(response);
+
+            assertEquals(1, response.size());
+            assertEquals(PRODUCT.getClass(), response.get(INDEX).getClass());
+            assertEquals(PRODUCT.getId(), response.get(INDEX).getId());
+            assertEquals(PRODUCT.getName(), response.get(INDEX).getName());
+            assertEquals(PRODUCT.getDescription(), response.get(INDEX).getDescription());
+            assertEquals(PRODUCT.getEmail(), response.get(INDEX).getEmail());
+
+            verify(productRepository, times(1)).findAll();
+        }
     }
 
     @Nested
@@ -55,9 +62,9 @@ public class ProductServiceTest {
         @DisplayName("Should return success when id is found")
         void shouldReturnSuccessWhenIdIsFound() {
 
-            when(productRepository.findById(ID)).thenReturn(optionalProduct);
+            when(productRepository.findById(PRODUCT.getId())).thenReturn(OPTIONAL_PRODUCT);
 
-            var response = productService.findById(ID);
+            var response = productService.findById(PRODUCT.getId());
 
             assertNotNull(response);
             assertNotNull(response.getId());
@@ -65,47 +72,22 @@ public class ProductServiceTest {
             assertNotNull(response.getDescription());
             assertNotNull(response.getEmail());
 
-            assertEquals(Product.class, response.getClass());
-            assertEquals(ID, response.getId());
-            assertEquals(NAME, response.getName());
-            assertEquals(DESCRIPTION, response.getDescription());
-            assertEquals(EMAIL, response.getEmail());
+            assertEquals(PRODUCT.getClass(), response.getClass());
+            assertEquals(PRODUCT.getId(), response.getId());
+            assertEquals(PRODUCT.getName(), response.getName());
+            assertEquals(PRODUCT.getDescription(), response.getDescription());
+            assertEquals(PRODUCT.getEmail(), response.getEmail());
         }
 
         @Test
         @DisplayName("Should throw a RuntimeException when id is not found")
         void shouldThrowARuntimeExceptionWhenIdIsNotFound() {
 
-            when(productRepository.findById(ID)).thenReturn(Optional.empty());
+            when(productRepository.findById(PRODUCT.getId())).thenReturn(Optional.empty());
 
-            var exception = assertThrows(RuntimeException.class, () -> productService.findById(ID));
+            var exception = assertThrows(RuntimeException.class, () -> productService.findById(PRODUCT.getId()));
 
             assertEquals(PRODUCT_NOT_FOUND, exception.getMessage());
-        }
-    }
-
-    @Nested
-    class FindAll {
-
-        @Test
-        @DisplayName("Should return with success all products")
-        void shouldReturnWithSuccessAllProducts() {
-
-            when(productRepository.findAll()).thenReturn(List.of(product));
-
-            var response = productService.findAll();
-
-            assertNotNull(response);
-
-            assertEquals(1, response.size());
-            assertEquals(Product.class, response.get(INDEX).getClass());
-
-            assertEquals(ID, response.get(INDEX).getId());
-            assertEquals(NAME, response.get(INDEX).getName());
-            assertEquals(DESCRIPTION, response.get(INDEX).getDescription());
-            assertEquals(EMAIL, response.get(INDEX).getEmail());
-
-            verify(productRepository, times(1)).findAll();
         }
     }
 
@@ -116,36 +98,37 @@ public class ProductServiceTest {
         @DisplayName("Should return success when email not exists")
         void shouldReturnSuccessWhenEmailNotExists() {
 
-            when(productRepository.save(productArgumentCaptor.capture())).thenReturn(product);
+            when(productRepository.save(productArgumentCaptor.capture())).thenReturn(PRODUCT);
 
-            var response = productService.save(productDTO);
+            var response = productService.save(PRODUCT_DTO);
 
             assertNotNull(response);
-            assertEquals(Product.class, response.getClass());
-            assertEquals(ID, response.getId());
-            assertEquals(NAME, response.getName());
-            assertEquals(DESCRIPTION, response.getDescription());
-            assertEquals(EMAIL, response.getEmail());
+            assertEquals(PRODUCT.getClass(), response.getClass());
+            assertEquals(PRODUCT.getId(), response.getId());
+            assertEquals(PRODUCT.getName(), response.getName());
+            assertEquals(PRODUCT.getDescription(), response.getDescription());
+            assertEquals(PRODUCT.getEmail(), response.getEmail());
 
             Product productCaptured = productArgumentCaptor.getValue();
 
             assertNotNull(productCaptured);
-            assertEquals(Product.class, productCaptured.getClass());
-            assertEquals(ID, productCaptured.getId());
-            assertEquals(NAME, productCaptured.getName());
-            assertEquals(DESCRIPTION, productCaptured.getDescription());
-            assertEquals(EMAIL, productCaptured.getEmail());
+            assertEquals(PRODUCT.getClass(), productCaptured.getClass());
+            assertEquals(PRODUCT.getId(), productCaptured.getId());
+            assertEquals(PRODUCT.getName(), productCaptured.getName());
+            assertEquals(PRODUCT.getDescription(), productCaptured.getDescription());
+            assertEquals(PRODUCT.getEmail(), productCaptured.getEmail());
         }
 
         @Test
         @DisplayName("Should throw a RuntimeException when email exists")
         void shouldThrowARuntimeExceptionWhenEmailExists() {
-            when(productRepository.findByEmail(EMAIL)).thenReturn(optionalProduct);
-            optionalProduct.get().setId(2L);
+            when(productRepository.findByEmail(PRODUCT.getEmail())).thenReturn(OPTIONAL_PRODUCT);
+            OPTIONAL_PRODUCT.get().setId(2L);
 
-            var exception = assertThrows(RuntimeException.class, () -> productService.save(productDTO));
+            var exception = assertThrows(RuntimeException.class, () -> productService.save(PRODUCT_DTO));
 
             assertEquals("Email already exists!", exception.getMessage());
+            OPTIONAL_PRODUCT.get().setId(1L);
         }
     }
 
@@ -156,35 +139,35 @@ public class ProductServiceTest {
         @DisplayName("Should return success when product exists")
         void shouldReturnSuccessWhenProductExists() {
 
-            when(productRepository.findById(ID)).thenReturn(optionalProduct);
-            when(productRepository.save(productArgumentCaptor.capture())).thenReturn(product);
+            when(productRepository.findById(PRODUCT.getId())).thenReturn(OPTIONAL_PRODUCT);
+            when(productRepository.save(productArgumentCaptor.capture())).thenReturn(PRODUCT);
 
-            var response = productService.update(productDTO);
+            var response = productService.update(PRODUCT_DTO);
 
             assertNotNull(response);
             assertEquals(Product.class, response.getClass());
-            assertEquals(ID, response.getId());
-            assertEquals(NAME, response.getName());
-            assertEquals(DESCRIPTION, response.getDescription());
-            assertEquals(EMAIL, response.getEmail());
+            assertEquals(PRODUCT.getId(), response.getId());
+            assertEquals(PRODUCT.getName(), response.getName());
+            assertEquals(PRODUCT.getDescription(), response.getDescription());
+            assertEquals(PRODUCT.getEmail(), response.getEmail());
 
             Product productCaptured = productArgumentCaptor.getValue();
 
             assertNotNull(productCaptured);
-            assertEquals(Product.class, productCaptured.getClass());
-            assertEquals(ID, productCaptured.getId());
-            assertEquals(NAME, productCaptured.getName());
-            assertEquals(DESCRIPTION, productCaptured.getDescription());
-            assertEquals(EMAIL, productCaptured.getEmail());
+            assertEquals(PRODUCT.getClass(), productCaptured.getClass());
+            assertEquals(PRODUCT.getId(), productCaptured.getId());
+            assertEquals(PRODUCT.getName(), productCaptured.getName());
+            assertEquals(PRODUCT.getDescription(), productCaptured.getDescription());
+            assertEquals(PRODUCT.getEmail(), productCaptured.getEmail());
         }
 
         @Test
         @DisplayName("Should throw RuntimeException when ID not exists")
         void shouldThrowRuntimeExceptionWhenIDNotExists() {
 
-            when(productRepository.findById(ID)).thenReturn(Optional.empty());
+            when(productRepository.findById(PRODUCT.getId())).thenReturn(Optional.empty());
 
-            var exception = assertThrows(RuntimeException.class, () -> productService.update(productDTO));
+            var exception = assertThrows(RuntimeException.class, () -> productService.update(PRODUCT_DTO));
 
             assertEquals(PRODUCT_NOT_FOUND, exception.getMessage());
         }
@@ -197,34 +180,30 @@ public class ProductServiceTest {
         @DisplayName("Should return success when ID exists")
         void shouldReturnSuccessWhenIDExists() {
 
-            when(productRepository.existsById(ID)).thenReturn(true);
-            doNothing().when(productRepository).deleteById(ID);
+            when(productRepository.existsById(PRODUCT.getId())).thenReturn(true);
+            doNothing().when(productRepository).deleteById(PRODUCT.getId());
 
-            productService.delete(ID);
+            productService.delete(PRODUCT.getId());
 
-            verify(productRepository, times(1)).existsById(ID);
-            verify(productRepository, times(1)).deleteById(ID);
+            verify(productRepository, times(1)).existsById(PRODUCT.getId());
+            verify(productRepository, times(1)).deleteById(PRODUCT.getId());
         }
 
         @Test
         @DisplayName("Should throw RuntimeException when ID not exists")
         void shouldThrowRuntimeExceptionWhenIDNotExists() {
 
-            when(productRepository.existsById(ID)).thenReturn(false);
+            when(productRepository.existsById(PRODUCT.getId())).thenReturn(false);
 
-            var exception = assertThrows(RuntimeException.class, () -> productService.delete(ID));
+            var exception = assertThrows(RuntimeException.class, () -> productService.delete(PRODUCT.getId()));
 
             assertEquals(PRODUCT_NOT_FOUND ,exception.getMessage());
 
-            verify(productRepository, times(1)).existsById(ID);
-            verify(productRepository, times(0)).deleteById(ID);
+            verify(productRepository, times(1)).existsById(PRODUCT.getId());
+            verify(productRepository, times(0)).deleteById(PRODUCT.getId());
         }
 
     }
 
-    private void startProduct() {
-        product = new Product(ID, NAME, DESCRIPTION, EMAIL);
-        productDTO = new ProductDTO(ID, NAME, DESCRIPTION, EMAIL);
-        optionalProduct = Optional.of(product);
-    }
+
 }
