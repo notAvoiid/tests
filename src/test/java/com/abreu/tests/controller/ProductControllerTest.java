@@ -3,7 +3,6 @@ package com.abreu.tests.controller;
 
 import com.abreu.tests.model.dto.ProductDTO;
 import com.abreu.tests.service.ProductService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -17,8 +16,7 @@ import static com.abreu.tests.utils.ProductConstants.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest
@@ -90,6 +88,33 @@ public class ProductControllerTest {
         }
     }
 
+    @Nested
+    class Update {
+
+        @Test
+        @DisplayName("Should Update Product Successfully")
+        void shouldUpdateProductSuccessfully() throws Exception {
+
+            when(productService.update(any(ProductDTO.class))).thenReturn(PRODUCT);
+
+            String productJson = objectMapper.writeValueAsString(PRODUCT);
+
+            mockMvc.perform(put(URL)
+                .contentType(APPLICATION_JSON)
+                .content(productJson)
+                .accept(APPLICATION_JSON))
+
+                .andExpect(status().isOk())
+                .andExpect(header().string(CONTENT_TYPE, TYPE))
+
+                .andExpect(content().json(productJson))
+                .andExpect(jsonPath(ID).value(PRODUCT.getId()))
+                .andExpect(jsonPath(NAME).value(PRODUCT.getName()))
+                .andExpect(jsonPath(DESCRIPTION).value(PRODUCT.getDescription()))
+                .andExpect(jsonPath(EMAIL).value(PRODUCT.getEmail()));
+        }
+
+    }
 
     @Nested
     class Create {

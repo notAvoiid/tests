@@ -159,7 +159,7 @@ public class ProductServiceTest {
             when(productRepository.findById(ID)).thenReturn(optionalProduct);
             when(productRepository.save(productArgumentCaptor.capture())).thenReturn(product);
 
-            var response = productService.update(ID, productDTO);
+            var response = productService.update(productDTO);
 
             assertNotNull(response);
             assertEquals(Product.class, response.getClass());
@@ -184,7 +184,7 @@ public class ProductServiceTest {
 
             when(productRepository.findById(ID)).thenReturn(Optional.empty());
 
-            var exception = assertThrows(RuntimeException.class, () -> productService.update(ID, productDTO));
+            var exception = assertThrows(RuntimeException.class, () -> productService.update(productDTO));
 
             assertEquals(PRODUCT_NOT_FOUND, exception.getMessage());
         }
