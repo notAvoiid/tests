@@ -34,8 +34,8 @@ public class ProductService {
     }
 
     @Transactional
-    public Product update(Long id, ProductDTO data) {
-        findById(id);
+    public Product update(ProductDTO data) {
+        findById(data.id());
         return productRepository.save(new Product(data));
     }
 

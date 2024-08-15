@@ -30,6 +30,11 @@ public class ProductController {
         return ResponseEntity.ok(productService.findById(id));
     }
 
+    @PutMapping
+    public ResponseEntity<Product> update(@RequestBody ProductDTO data) {
+        return ResponseEntity.ok(productService.update(data));
+    }
+
     @PostMapping
     public ResponseEntity<Product> save(ProductDTO data) {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(productService.save(data).getId()).toUri();
