@@ -49,12 +49,11 @@ docker compose up -d
 # 4. Construa o projeto usando Maven
 mvn clean install
 
-# Ou
-mvnx spring-boot:run
-
 # 5. Executa a aplicação Spring Boot
 mvn spring-boot:run
 
+# Ou
+mvnw spring-boot:run
 ```
 
 ## 📫 Contribuição
