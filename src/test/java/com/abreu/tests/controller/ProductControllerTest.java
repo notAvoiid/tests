@@ -55,7 +55,7 @@ public class ProductControllerTest {
                 .andExpect(jsonPath(ID_0).value(PRODUCTS.get(INDEX).getId()))
                 .andExpect(jsonPath(NAME_0).value(PRODUCTS.get(INDEX).getName()))
                 .andExpect(jsonPath(DESCRIPTION_0).value(PRODUCTS.get(INDEX).getDescription()))
-                .andExpect(jsonPath(EMAIL_0).value(PRODUCTS.get(INDEX).getEmail()));
+                .andExpect(jsonPath(EMAIL_0).value(PRODUCTS.get(INDEX).getStock()));
         }
     }
 
@@ -82,7 +82,7 @@ public class ProductControllerTest {
                 .andExpect(jsonPath(ID).value(PRODUCT.getId()))
                 .andExpect(jsonPath(NAME).value(PRODUCT.getName()))
                 .andExpect(jsonPath(DESCRIPTION).value(PRODUCT.getDescription()))
-                .andExpect(jsonPath(EMAIL).value(PRODUCT.getEmail()));
+                .andExpect(jsonPath(EMAIL).value(PRODUCT.getStock()));
         }
     }
 
@@ -106,7 +106,7 @@ public class ProductControllerTest {
                     .andExpect(jsonPath(ID).value(PRODUCT.getId()))
                     .andExpect(jsonPath(NAME).value(PRODUCT.getName()))
                     .andExpect(jsonPath(DESCRIPTION).value(PRODUCT.getDescription()))
-                    .andExpect(jsonPath(EMAIL).value(PRODUCT.getEmail()));
+                    .andExpect(jsonPath(EMAIL).value(PRODUCT.getStock()));
         }
     }
 
@@ -133,7 +133,7 @@ public class ProductControllerTest {
                 .andExpect(jsonPath(ID).value(PRODUCT.getId()))
                 .andExpect(jsonPath(NAME).value(PRODUCT.getName()))
                 .andExpect(jsonPath(DESCRIPTION).value(PRODUCT.getDescription()))
-                .andExpect(jsonPath(EMAIL).value(PRODUCT.getEmail()));
+                .andExpect(jsonPath(EMAIL).value(PRODUCT.getStock()));
         }
 
     }

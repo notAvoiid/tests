@@ -21,12 +21,12 @@ public class Product {
 
     private String name;
     private String description;
-    private String email;
+    private Long stock;
 
     public Product(ProductDTO data) {
         this.id = data.id();
         this.name = data.name();
         this.description = data.description();
-        this.email = data.email();
+        this.stock = data.stock();
     }
 }

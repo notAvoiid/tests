@@ -51,7 +51,7 @@ public class ProductServiceTest {
             assertEquals(PRODUCT.getId(), response.get(INDEX).getId());
             assertEquals(PRODUCT.getName(), response.get(INDEX).getName());
             assertEquals(PRODUCT.getDescription(), response.get(INDEX).getDescription());
-            assertEquals(PRODUCT.getEmail(), response.get(INDEX).getEmail());
+            assertEquals(PRODUCT.getStock(), response.get(INDEX).getStock());
 
             verify(productRepository, times(1)).findAll();
         }
@@ -72,13 +72,13 @@ public class ProductServiceTest {
             assertNotNull(response.getId());
             assertNotNull(response.getName());
             assertNotNull(response.getDescription());
-            assertNotNull(response.getEmail());
+            assertNotNull(response.getStock());
 
             assertEquals(PRODUCT.getClass(), response.getClass());
             assertEquals(PRODUCT.getId(), response.getId());
             assertEquals(PRODUCT.getName(), response.getName());
             assertEquals(PRODUCT.getDescription(), response.getDescription());
-            assertEquals(PRODUCT.getEmail(), response.getEmail());
+            assertEquals(PRODUCT.getStock(), response.getStock());
 
             verify(productRepository, times(1)).findById(PRODUCT.getId());
         }
@@ -111,7 +111,7 @@ public class ProductServiceTest {
             assertEquals(PRODUCT.getId(), response.getId());
             assertEquals(PRODUCT.getName(), response.getName());
             assertEquals(PRODUCT.getDescription(), response.getDescription());
-            assertEquals(PRODUCT.getEmail(), response.getEmail());
+            assertEquals(PRODUCT.getStock(), response.getStock());
 
             Product productCaptured = productArgumentCaptor.getValue();
 
@@ -120,7 +120,7 @@ public class ProductServiceTest {
             assertEquals(PRODUCT.getId(), productCaptured.getId());
             assertEquals(PRODUCT.getName(), productCaptured.getName());
             assertEquals(PRODUCT.getDescription(), productCaptured.getDescription());
-            assertEquals(PRODUCT.getEmail(), productCaptured.getEmail());
+            assertEquals(PRODUCT.getStock(), productCaptured.getStock());
 
             verify(productRepository, times(1)).save(any());
         }
@@ -128,12 +128,12 @@ public class ProductServiceTest {
         @Test
         @DisplayName("Should throw a RuntimeException when email exists")
         void shouldThrowARuntimeExceptionWhenEmailExists() {
-            when(productRepository.findByEmail(PRODUCT.getEmail())).thenReturn(OPTIONAL_PRODUCT);
+            when(productRepository.findByName(PRODUCT.getName())).thenReturn(OPTIONAL_PRODUCT);
             OPTIONAL_PRODUCT.get().setId(2L);
 
             var exception = assertThrows(EmailAlreadyExistsException.class, () -> productService.save(PRODUCT_DTO));
 
-            assertEquals("Email already exists!", exception.getMessage());
+            assertEquals("Name already exists!", exception.getMessage());
             OPTIONAL_PRODUCT.get().setId(1L);
         }
     }
@@ -155,7 +155,7 @@ public class ProductServiceTest {
             assertEquals(PRODUCT.getId(), response.getId());
             assertEquals(PRODUCT.getName(), response.getName());
             assertEquals(PRODUCT.getDescription(), response.getDescription());
-            assertEquals(PRODUCT.getEmail(), response.getEmail());
+            assertEquals(PRODUCT.getStock(), response.getStock());
 
             Product productCaptured = productArgumentCaptor.getValue();
 
@@ -164,7 +164,7 @@ public class ProductServiceTest {
             assertEquals(PRODUCT.getId(), productCaptured.getId());
             assertEquals(PRODUCT.getName(), productCaptured.getName());
             assertEquals(PRODUCT.getDescription(), productCaptured.getDescription());
-            assertEquals(PRODUCT.getEmail(), productCaptured.getEmail());
+            assertEquals(PRODUCT.getStock(), productCaptured.getStock());
 
             verify(productRepository, times(1)).findById(anyLong());
             verify(productRepository, times(1)).save(any());

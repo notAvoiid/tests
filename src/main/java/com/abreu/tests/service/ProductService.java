@@ -31,7 +31,7 @@ public class ProductService {
 
     @Transactional
     public Product save(ProductDTO data) {
-        findByEmail(data);
+        findByName(data);
         Product product = new Product(data);
         return productRepository.save(product);
     }
@@ -48,8 +48,8 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
-    private void findByEmail(ProductDTO data) {
-        var product = productRepository.findByEmail(data.email());
-        if (product.isPresent() && !product.get().getId().equals(data.id())) throw new EmailAlreadyExistsException("Email already exists!");
+    private void findByName(ProductDTO data) {
+        var product = productRepository.findByName(data.name());
+        if (product.isPresent() && !product.get().getId().equals(data.id())) throw new EmailAlreadyExistsException("Name already exists!");
     }
 }
