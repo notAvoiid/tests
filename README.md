@@ -1,10 +1,12 @@
 [JAVA_BADGE]:https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white
-[SPRING_BADGE]: https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white
+[SPRING_BADGE]:https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white
+[JUNIT_BADGE]:https://camo.githubusercontent.com/422c31a0a0add707d4617d3391c76cb5a2021a4457a8ff848b7443e85eee0cad/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4a556e6974352d3444323132312e7376673f7374796c653d666f722d7468652d6261646765266c6f676f3d4a556e697435266c6f676f436f6c6f723d7768697465
 
 <h1 align="center" style="font-weight: bold;">Tests Project 🧪</h1>
 
 ![spring][SPRING_BADGE]
 ![java][JAVA_BADGE]
+![junit][JUNIT_BADGE]
 <br>
 
 <p align="center">
