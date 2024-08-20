@@ -84,8 +84,8 @@ public class ProductServiceTest {
         }
 
         @Test
-        @DisplayName("Should throw a RuntimeException when id is not found")
-        void shouldThrowARuntimeExceptionWhenIdIsNotFound() {
+        @DisplayName("Should throw a ProductNotFoundException when id is not found")
+        void shouldThrowAProductNotFoundExceptionWhenIdIsNotFound() {
 
             when(productRepository.findById(PRODUCT.getId())).thenReturn(Optional.empty());
 
@@ -99,8 +99,8 @@ public class ProductServiceTest {
     class Create {
 
         @Test
-        @DisplayName("Should return success when email not exists")
-        void shouldReturnSuccessWhenEmailNotExists() {
+        @DisplayName("Should return success when name not exists")
+        void shouldReturnSuccessWhenNameNotExists() {
 
             when(productRepository.save(productArgumentCaptor.capture())).thenReturn(PRODUCT);
 
@@ -126,8 +126,8 @@ public class ProductServiceTest {
         }
 
         @Test
-        @DisplayName("Should throw a RuntimeException when email exists")
-        void shouldThrowARuntimeExceptionWhenEmailExists() {
+        @DisplayName("Should throw a NameAlreadyExistsException when name exists")
+        void shouldThrowANameAlreadyExistsExceptionWhenNameExists() {
             when(productRepository.findByName(PRODUCT.getName())).thenReturn(OPTIONAL_PRODUCT);
             OPTIONAL_PRODUCT.get().setId(2L);
 
@@ -171,8 +171,8 @@ public class ProductServiceTest {
         }
 
         @Test
-        @DisplayName("Should throw RuntimeException when ID not exists")
-        void shouldThrowRuntimeExceptionWhenIDNotExists() {
+        @DisplayName("Should throw ProductNotFoundException when ID not exists")
+        void shouldThrowProductNotFoundExceptionWhenIDNotExists() {
 
             when(productRepository.findById(PRODUCT.getId())).thenReturn(Optional.empty());
 
@@ -212,8 +212,8 @@ public class ProductServiceTest {
         }
 
         @Test
-        @DisplayName("Should throw RuntimeException when ID not exists")
-        void shouldThrowRuntimeExceptionWhenIDNotExists() {
+        @DisplayName("Should throw ProductNotFoundException when ID not exists")
+        void shouldThrowProductNotFoundExceptionWhenIDNotExists() {
 
             when(productRepository.existsById(PRODUCT.getId())).thenReturn(false);
 
