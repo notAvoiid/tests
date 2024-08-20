@@ -56,6 +56,11 @@ mvn spring-boot:run
 mvnw spring-boot:run
 ```
 
+## 📄 Documentação
+
+1. Certifique-se de que o projeto está rodando localmente.
+2. Navegue até `http://localhost:8080/swagger-ui.html` no seu navegador ou clique aqui segurando CTRL: [Swagger](http://localhost:8080/swagger-ui.html)  
+
 ## 📫 Contribuição
 
 Para me ajudar a melhorar o projeto ou me ajudar a melhorar:
