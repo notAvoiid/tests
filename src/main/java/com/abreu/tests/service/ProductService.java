@@ -1,6 +1,6 @@
 package com.abreu.tests.service;
 
-import com.abreu.tests.exceptions.EmailAlreadyExistsException;
+import com.abreu.tests.exceptions.NameAlreadyExistsException;
 import com.abreu.tests.exceptions.ProductNotFoundException;
 import com.abreu.tests.model.Product;
 import com.abreu.tests.model.dto.ProductDTO;
@@ -38,8 +38,8 @@ public class ProductService {
 
     @Transactional
     public Product update(ProductDTO data) {
-        findById(data.id());
         findByName(data);
+        findById(data.id());
         return productRepository.save(new Product(data));
     }
 
@@ -51,6 +51,6 @@ public class ProductService {
 
     private void findByName(ProductDTO data) {
         var product = productRepository.findByName(data.name());
-        if (product.isPresent() && !product.get().getId().equals(data.id())) throw new EmailAlreadyExistsException("Name already exists!");
+        if (product.isPresent() && !product.get().getId().equals(data.id())) throw new NameAlreadyExistsException("Name already exists!");
     }
 }

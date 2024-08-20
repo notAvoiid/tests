@@ -11,7 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 
-import static com.abreu.tests.utils.ProductConstants.EMAIL_ALREADY_EXISTS;
+import static com.abreu.tests.utils.ProductConstants.NAME_ALREADY_EXISTS;
 import static com.abreu.tests.utils.ProductConstants.PRODUCT_NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.HttpStatus.CONFLICT;
@@ -77,7 +77,7 @@ public class ApiExceptionHandlerTests {
         @DisplayName("Handle Conflict Exception")
         void handleConflictException() {
             var response = exceptionHandler.handleConflict(
-                    new EmailAlreadyExistsException(EMAIL_ALREADY_EXISTS),
+                    new NameAlreadyExistsException(NAME_ALREADY_EXISTS),
                     request
             );
 
@@ -93,7 +93,7 @@ public class ApiExceptionHandlerTests {
 
             assertEquals(ResponseEntity.class, response.getClass());
             assertEquals(ErrorMessage.class, response.getBody().getClass());
-            assertEquals(EMAIL_ALREADY_EXISTS, response.getBody().getMessage());
+            assertEquals(NAME_ALREADY_EXISTS, response.getBody().getMessage());
             assertEquals(409, response.getBody().getStatus());
         }
 
@@ -101,7 +101,7 @@ public class ApiExceptionHandlerTests {
         @DisplayName("Handle Null Request When Conflict")
         void handleNullRequest() {
             var response = exceptionHandler.handleConflict(
-                    new EmailAlreadyExistsException(EMAIL_ALREADY_EXISTS),
+                    new NameAlreadyExistsException(NAME_ALREADY_EXISTS),
                     null
             );
 

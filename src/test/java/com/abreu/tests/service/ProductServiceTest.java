@@ -1,6 +1,6 @@
 package com.abreu.tests.service;
 
-import com.abreu.tests.exceptions.EmailAlreadyExistsException;
+import com.abreu.tests.exceptions.NameAlreadyExistsException;
 import com.abreu.tests.exceptions.ProductNotFoundException;
 import com.abreu.tests.model.Product;
 import com.abreu.tests.repository.ProductRepository;
@@ -131,9 +131,9 @@ public class ProductServiceTest {
             when(productRepository.findByName(PRODUCT.getName())).thenReturn(OPTIONAL_PRODUCT);
             OPTIONAL_PRODUCT.get().setId(2L);
 
-            var exception = assertThrows(EmailAlreadyExistsException.class, () -> productService.save(PRODUCT_DTO));
+            var exception = assertThrows(NameAlreadyExistsException.class, () -> productService.save(PRODUCT_DTO));
 
-            assertEquals("Name already exists!", exception.getMessage());
+            assertEquals(NAME_ALREADY_EXISTS, exception.getMessage());
             OPTIONAL_PRODUCT.get().setId(1L);
         }
     }
@@ -179,6 +179,19 @@ public class ProductServiceTest {
             var exception = assertThrows(ProductNotFoundException.class, () -> productService.update(PRODUCT_DTO));
 
             assertEquals(PRODUCT_NOT_FOUND, exception.getMessage());
+        }
+
+        @Test
+        @DisplayName("Should throw NameAlreadyExistsException when name already exists")
+        void shouldThrowNameAlreadyExistsExceptionWhenNameExists() {
+
+            when(productRepository.findByName(PRODUCT.getName())).thenReturn(OPTIONAL_PRODUCT);
+            OPTIONAL_PRODUCT.get().setId(2L);
+
+            var exception = assertThrows(NameAlreadyExistsException.class, () -> productService.update(PRODUCT_DTO));
+
+            assertEquals(NAME_ALREADY_EXISTS, exception.getMessage());
+            OPTIONAL_PRODUCT.get().setId(1L);
         }
     }
 

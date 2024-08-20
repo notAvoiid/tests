@@ -4,12 +4,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.CONFLICT)
-public class EmailAlreadyExistsException extends RuntimeException {
+public class NameAlreadyExistsException extends RuntimeException {
 
-    public EmailAlreadyExistsException() {
+    public NameAlreadyExistsException() {
     }
 
-    public EmailAlreadyExistsException(String message) {
+    public NameAlreadyExistsException(String message) {
         super(message);
     }
 }

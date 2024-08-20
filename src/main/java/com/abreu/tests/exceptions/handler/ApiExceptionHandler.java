@@ -1,6 +1,6 @@
 package com.abreu.tests.exceptions.handler;
 
-import com.abreu.tests.exceptions.EmailAlreadyExistsException;
+import com.abreu.tests.exceptions.NameAlreadyExistsException;
 import com.abreu.tests.exceptions.ErrorMessage;
 import com.abreu.tests.exceptions.ProductNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,7 +37,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(new ErrorMessage(request, NOT_FOUND, ex.getMessage()));
     }
 
-    @ExceptionHandler({ EmailAlreadyExistsException.class })
+    @ExceptionHandler({ NameAlreadyExistsException.class })
     public final ResponseEntity<ErrorMessage> handleConflict(
             RuntimeException ex, HttpServletRequest request
     ) {
