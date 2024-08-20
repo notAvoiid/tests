@@ -39,6 +39,7 @@ public class ProductService {
     @Transactional
     public Product update(ProductDTO data) {
         findById(data.id());
+        findByName(data);
         return productRepository.save(new Product(data));
     }
 
