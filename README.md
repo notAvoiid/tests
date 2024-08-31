@@ -1,7 +1,7 @@
 [JAVA_BADGE]:https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white
-[SPRING_BADGE]:https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white
-[JUNIT_BADGE]:https://img.shields.io/badge/JUnit5-4D2121.svg?style=for-the-badge&logo=JUnit5&logoColor=white
-[MOCKITO_BADGE]:https://img.shields.io/badge/Mockito-ffffff.svg?style=for-the-badge&logo=Mockito&logoColor=green
+[SPRING_BADGE]:https://img.shields.io/badge/spring-%2382B54B.svg?style=for-the-badge&logo=spring&logoColor=white
+[JUNIT_BADGE]:https://img.shields.io/badge/JUnit5-25A162.svg?style=for-the-badge&logo=JUnit5&logoColor=white
+[MOCKITO_BADGE]:https://img.shields.io/badge/Mockito-4D4D4D.svg?style=for-the-badge&logo=Mockito&logoColor=white
 
 
 <h1 align="center" style="font-weight: bold;">Tests Project 🧪</h1>
